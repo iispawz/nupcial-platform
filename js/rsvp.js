@@ -24,7 +24,11 @@
     init();
   }
 
-  document.addEventListener('DOMContentLoaded', waitAndInit);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', waitAndInit);
+  } else {
+    waitAndInit();
+  }
 
   /* ── INIT ── */
   function init() {
