@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Nupcial</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { background: var(--cream); color: #1f2937; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .dash-header {
+    background: var(--dark); border-bottom: 1px solid rgba(201,168,76,0.15);
+    padding: 16px 32px; display: flex; align-items: center;
+    justify-content: space-between; position: sticky; top: 0; z-index: 100;
+  }
+  .dash-logo {
+    font-family: var(--font-serif); font-size: 1.3rem;
+    font-style: italic; color: var(--gold-light);
+  }
+  .dash-site-badge {
+    font-family: var(--font-display); font-size: 0.5rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--olive-light); background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.2); padding: 4px 12px; border-radius: 20px;
+  }
+  .dash-nav { display: flex; gap: 8px; }
+  .dash-nav a {
+    font-family: var(--font-display); font-size: 0.5rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--olive-light); padding: 6px 12px; border-radius: 3px;
+    transition: color 0.2s; text-decoration: none;
+  }
+  .dash-nav a:hover { color: var(--gold); }
+
+  /* ── LAYOUT ── */
+  .dash-main { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+  /* ── STATS ── */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin-bottom: 40px;
+  }
+  .stat-card {
+    background: #fff; border: 1px solid #f0e9de; border-radius: 4px;
+    padding: 20px 24px; text-align: center;
+  }
+  .stat-num {
+    font-family: var(--font-display); font-size: 2rem;
+    color: var(--gold-dark); display: block; margin-bottom: 4px;
+  }
+  .stat-label {
+    font-family: var(--font-display); font-size: 0.48rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: #9ca3af;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: #fff; border: 1px solid #f0e9de; border-radius: 4px;
+    padding: 24px; margin-bottom: 40px;
+  }
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+  }
+  .progress-title {
+    font-family: var(--font-display); font-size: 0.55rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-dark);
+  }
+  .progress-bar-bg {
+    height: 6px; background: #f0e9de; border-radius: 3px; overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    border-radius: 3px; transition: width 0.6s ease; width: 0%;
+  }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    display: flex; gap: 12px; align-items: center;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; }
+  .search-wrap input {
+    width: 100%; padding: 9px 12px 9px 36px;
+    border: 1.5px solid #e5e7eb; border-radius: 3px;
+    font-family: var(--font-serif); font-size: 0.95rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--gold); }
+  .search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: #9ca3af; pointer-events: none;
+  }
+  .filter-btn {
+    font-family: var(--font-display); font-size: 0.5rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 8px 16px; border-radius: 3px; border: 1px solid #e5e7eb;
+    background: #fff; color: #6b7280; cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn.active { background: var(--dark); color: var(--gold); border-color: var(--dark); }
+  .filter-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold-dark); }
+
+  /* ── TABLE ── */
+  .dash-name  { font-family: var(--font-serif); font-size: 1rem; color: #1f2937; }
+  .dash-grupo { font-family: var(--font-display); font-size: 0.55rem; letter-spacing: 0.1em; color: #9ca3af; }
+  .dash-date  { font-family: var(--font-display); font-size: 0.52rem; letter-spacing: 0.08em; color: #9ca3af; }
+  .dash-badge { }
+  .dash-empty { text-align: center; padding: 40px !important; color: #9ca3af; font-style: italic; }
+
+  /* ── UPDATED ── */
+  .last-updated {
+    font-family: var(--font-display); font-size: 0.48rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: #9ca3af; text-align: right; margin-top: 12px;
+  }
+
+  /* ── SPINNER ── */
+  #dash-spinner {
+    display: none; justify-content: center; align-items: center;
+    gap: 12px; padding: 40px;
+    font-family: var(--font-display); font-size: 0.55rem;
+    letter-spacing: 0.2em; color: var(--gold-dark);
+  }
+  #dash-spinner .spinner { border-top-color: var(--gold-dark); border-color: rgba(138,110,47,0.2); }
+
+  /* ── ERROR ── */
+  #dash-error {
+    display: none; padding: 16px; border-radius: 3px;
+    background: #fef2f2; border: 1px solid #fca5a5;
+    color: #dc2626; font-size: 0.9rem; margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header class="dash-header">
+  <div class="dash-logo">Nupcial</div>
+  <div class="dash-site-badge" id="dash-site-name">carregando…</div>
+  <nav class="dash-nav">
+    <a href="#confirmacoes">Confirmações</a>
+    <a href="#presentes">Presentes</a>
+    <a id="link-convite" href="#">Ver convite</a>
+  </nav>
+</header>
+
+<main class="dash-main">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-num" id="stat-total">—</span>
+      <span class="stat-label">Respostas</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-confirmados" style="color:#166534">—</span>
+      <span class="stat-label">Confirmados</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-naovao" style="color:#991b1b">—</span>
+      <span class="stat-label">Não vão</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-pendentes" style="color:#854d0e">—</span>
+      <span class="stat-label">Pendentes</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="stat-semresposta" style="color:#6b7280">—</span>
+      <span class="stat-label">Sem resposta</span>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span class="progress-title">Confirmações</span>
+      <span class="progress-title" id="progress-pct">0%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-confirmados"></div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="dash-error"></div>
+
+  <!-- Toolbar -->
+  <div class="toolbar" id="confirmacoes">
+    <div class="search-wrap">
+      <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="Buscar convidado ou grupo…">
+    </div>
+    <button class="filter-btn active" data-status="all">Todos</button>
+    <button class="filter-btn" data-status="confirmado">Confirmados</button>
+    <button class="filter-btn" data-status="não vai">Não vão</button>
+    <button class="filter-btn" data-status="pendente">Pendentes</button>
+  </div>
+
+  <!-- Spinner -->
+  <div id="dash-spinner"><div class="spinner"></div> Carregando…</div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th class="hide-mobile">Grupo</th>
+          <th>Status</th>
+          <th class="hide-mobile">Atualizado</th>
+        </tr>
+      </thead>
+      <tbody id="results-body">
+        <tr><td colspan="4" class="dash-empty">Carregando confirmações…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="last-updated" id="last-updated"></div>
+
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/site-resolver.js"></script>
+<script src="js/groups.js"></script>
+<script>
+(function () {
+  const REFRESH_MS = 120000;
+  let allRows    = [];
+  let filterStatus = 'all';
+  let searchTerm   = '';
+
+  /* Aguarda site estar pronto */
+  window.addEventListener('site-ready', function () {
+    const c = window.SITE_CONFIG || {};
+    const noiva = c.nome_noiva || 'Noiva';
+    const noivo = c.nome_noivo || 'Noivo';
+
+    document.getElementById('dash-site-name').textContent = `${noiva} & ${noivo}`;
+    document.title = `Dashboard — ${noiva} & ${noivo}`;
+
+    const slug = window.SITE_SLUG || 'demo';
+    document.getElementById('link-convite').href = `index.html?site=${slug}`;
+
+    loadData();
+    setInterval(loadData, REFRESH_MS);
+  });
+
+  document.getElementById('search-input')?.addEventListener('input', e => {
+    searchTerm = e.target.value.toLowerCase();
+    renderTable();
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterStatus = btn.dataset.status;
+      renderTable();
+    });
+  });
+
+  async function loadData() {
+    if (!window.SITE_ID) return;
+    try {
+      showSpinner(true);
+      const rows = await window.SB.sbSelect(
+        'confirmacoes',
+        `site_id=eq.${window.SITE_ID}&order=ultima_atualizacao.desc`,
+        'grupo_id,nome,status,ultima_atualizacao'
+      );
+      allRows = rows || [];
+      renderStats();
+      renderTable();
+    } catch (e) {
+      showError('Não foi possível carregar os dados.');
+    } finally {
+      showSpinner(false);
+      document.getElementById('last-updated').textContent =
+        'Atualizado: ' + new Date().toLocaleTimeString('pt-BR');
+    }
+  }
+
+  function renderStats() {
+    const total       = allRows.length;
+    const confirmados = allRows.filter(r => r.status === 'Confirmado').length;
+    const naoVao      = allRows.filter(r => r.status === 'Não vai').length;
+    const pendentes   = allRows.filter(r => r.status === 'Pendente').length;
+
+    const totalConvidados = window.GRUPOS
+      ? Object.values(window.GRUPOS).reduce((a, g) => a + g.membros.length, 0)
+      : total;
+
+    const semResposta = Math.max(0, totalConvidados - total);
+
+    setText('stat-total',       total);
+    setText('stat-confirmados', confirmados);
+    setText('stat-naovao',      naoVao);
+    setText('stat-pendentes',   pendentes);
+    setText('stat-semresposta', semResposta);
+
+    const pct = totalConvidados > 0 ? Math.round((confirmados / totalConvidados) * 100) : 0;
+    const bar = document.getElementById('progress-confirmados');
+    if (bar) bar.style.width = pct + '%';
+    setText('progress-pct', pct + '%');
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('results-body');
+    if (!tbody) return;
+
+    const filtered = allRows.filter(r => {
+      const matchStatus = filterStatus === 'all'
+        || r.status.toLowerCase().includes(filterStatus);
+      const matchSearch = !searchTerm
+        || r.nome.toLowerCase().includes(searchTerm)
+        || r.grupo_id.toLowerCase().includes(searchTerm);
+      return matchStatus && matchSearch;
+    });
+
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="4" class="dash-empty">Nenhum resultado encontrado.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(r => `
+      <tr>
+        <td class="dash-name">${r.nome}</td>
+        <td class="dash-grupo hide-mobile">${labelFromId(r.grupo_id)}</td>
+        <td><span class="badge ${badgeClass(r.status)}">${r.status}</span></td>
+        <td class="dash-date hide-mobile">${formatDate(r.ultima_atualizacao)}</td>
+      </tr>`).join('');
+  }
+
+  function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+  function showSpinner(on) {
+    const el = document.getElementById('dash-spinner');
+    if (el) el.style.display = on ? 'flex' : 'none';
+  }
+  function showError(msg) {
+    const el = document.getElementById('dash-error');
+    if (el) { el.textContent = msg; el.style.display = 'block'; }
+  }
+  function badgeClass(status) {
+    if (status === 'Confirmado') return 'badge-yes';
+    if (status === 'Não vai')   return 'badge-no';
+    return 'badge-pending';
+  }
+  function formatDate(str) {
+    if (!str) return '—';
+    const d = new Date(str);
+    if (isNaN(d)) return str;
+    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  }
+  function labelFromId(id) {
+    return window.GRUPOS?.[id]?.label || id;
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+# Credenciais — nunca subir para o git
+js/config.js
+
+# Sistema
+.DS_Store
+Thumbs.db

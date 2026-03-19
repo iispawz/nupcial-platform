@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nupcial</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  /* ── PAGE SPECIFIC ── */
+  body {
+    background: var(--dark);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    z-index: 1;
+  }
+  .hero-photo {
+    position: absolute;
+    inset: 0;
+    background: url('img/foto-casal.jpg') center/cover no-repeat;
+    opacity: 0.18;
+    z-index: 0;
+  }
+  .hero-content { position: relative; z-index: 1; }
+
+  .hero-pre {
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero-names {
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero-names span { color: var(--gold-light); }
+  .hero-amp {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: var(--gold);
+    font-style: italic;
+    display: block;
+    margin: 8px 0;
+  }
+  .hero-date {
+    font-family: var(--font-display);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  /* ── COUNTDOWN ── */
+  .countdown {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+  .cd-item { text-align: center; }
+  .cd-num {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    color: var(--gold);
+    display: block;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .cd-label {
+    font-family: var(--font-display);
+    font-size: 0.45rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--olive-light);
+  }
+
+  /* ── SCROLL CTA ── */
+  .scroll-cta {
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .scroll-cta span {
+    font-family: var(--font-display);
+    font-size: 0.5rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(6px); }
+  }
+  .scroll-arrow {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 24px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-style: italic;
+    color: var(--gold-light);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    font-family: var(--font-display);
+    font-size: 0.52rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--olive-light);
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  /* ── DETAILS ── */
+  .details-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  /* ── RSVP ── */
+  #rsvp-section { display: none; }
+  .rsvp-greeting {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--gold-light);
+    text-align: center;
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+  .member-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: 3px;
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .member-card.visible { opacity: 1; transform: translateY(0); }
+  .member-name {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    color: var(--cream);
+    margin-bottom: 14px;
+  }
+  .member-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .status-btn {
+    padding: 8px 16px;
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--olive-light);
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .status-btn:hover      { border-color: var(--gold); color: var(--gold); }
+  .active-yes     { background: rgba(22,101,52,0.3)  !important; border-color: #4ade80 !important; color: #4ade80 !important; }
+  .active-no      { background: rgba(153,27,27,0.3)  !important; border-color: #f87171 !important; color: #f87171 !important; }
+  .active-pending { background: rgba(133,77,14,0.3)  !important; border-color: #fbbf24 !important; color: #fbbf24 !important; }
+
+  .submit-wrap {
+    text-align: center;
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+
+  /* ── SUCCESS BANNER ── */
+  #success-banner {
+    display: none;
+    background: rgba(22,101,52,0.12);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-radius: 4px;
+    padding: 32px;
+    text-align: center;
+    margin-top: 24px;
+  }
+  #success-banner.visible { display: block; }
+  .success-title {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-style: italic;
+    color: #4ade80;
+    margin-bottom: 16px;
+  }
+  #success-msg {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--cream);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  /* ── RSVP CLOSED ── */
+  #rsvp-closed {
+    display: none;
+    text-align: center;
+    padding: 32px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 4px;
+  }
+
+  /* ── LOADING ── */
+  #rsvp-loading {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+    color: var(--olive-light);
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+  }
+
+  /* ── PREVIEW BADGE ── */
+  #preview-badge {
+    display: none;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .preview-pill {
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold);
+    font-family: var(--font-display);
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 24px;
+    border-top: 1px solid rgba(201,168,76,0.1);
+  }
+  .footer-brand {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    font-style: italic;
+    color: var(--olive-light);
+    margin-bottom: 4px;
+  }
+  .footer-link {
+    font-family: var(--font-display);
+    font-size: 0.45rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.5;
+    text-decoration: none;
+  }
+  .footer-link:hover { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-photo"></div>
+  <div class="hero-content">
+    <div class="hero-pre" id="hero-pre">Convidamos para a celebração do nosso casamento</div>
+
+    <div class="hero-names" id="hero-names">
+      <span id="hero-noiva">Isabella</span>
+      <em class="hero-amp">&</em>
+      <span id="hero-noivo">Samuel</span>
+    </div>
+
+    <div class="hero-date" id="hero-date">07 de novembro de 2026 · 16h30</div>
+
+    <div class="countdown">
+      <div class="cd-item"><span class="cd-num" id="cd-days">--</span><span class="cd-label">dias</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-hours">--</span><span class="cd-label">horas</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-minutes">--</span><span class="cd-label">minutos</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-seconds">--</span><span class="cd-label">segundos</span></div>
+    </div>
+
+    <div class="scroll-cta" onclick="document.getElementById('details').scrollIntoView({behavior:'smooth'})">
+      <span>Ver detalhes</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DETAILS ── -->
+<section class="section" id="details">
+  <div class="ornament" style="margin-bottom:40px">Detalhes</div>
+
+  <div class="details-card">
+    <div class="info-row">
+      <div class="info-item">
+        <div class="info-glyph">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>
+          </svg>
+        </div>
+        <div class="info-label">Data</div>
+        <div class="info-value" id="info-data">07 · 11 · 2026</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="info-item">
+        <div class="info-glyph">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <circle cx="12" cy="10" r="3"/><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+          </svg>
+        </div>
+        <div class="info-label">Local</div>
+        <div class="info-value" id="info-local"><em>Espaço Carrier</em></div>
+        <div class="info-value" style="font-size:0.9rem;margin-top:-6px" id="info-cidade">Mairiporã, SP</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="info-item clickable" onclick="openPopup()">
+        <div class="info-glyph">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </div>
+        <div class="info-label">Traje</div>
+        <div class="info-value">Gala</div>
+        <div class="tap-hint">ver paleta</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RSVP ── -->
+<section class="section" id="rsvp-section">
+  <div class="ornament" style="margin-bottom:40px">Confirmação de Presença</div>
+
+  <div id="preview-badge"><span class="preview-pill">Modo preview</span></div>
+  <div id="rsvp-greeting" class="rsvp-greeting"></div>
+
+  <div id="rsvp-loading">
+    <div class="spinner"></div>
+    Carregando…
+  </div>
+
+  <div id="rsvp-closed">
+    <p style="font-family:var(--font-serif);font-size:1.2rem;font-style:italic;color:var(--gold-light);margin-bottom:12px">
+      O prazo de confirmação foi encerrado.
+    </p>
+    <p style="font-family:var(--font-body);color:var(--olive-light);font-size:0.95rem">
+      Entre em contato com os noivos para mais informações.
+    </p>
+  </div>
+
+  <div id="members-list"></div>
+
+  <div id="submit-area" class="submit-wrap">
+    <button class="btn btn-gold" id="submit-btn" onclick="RSVP.submit()" style="min-width:220px">
+      Confirmar presença
+    </button>
+  </div>
+
+  <div id="success-banner">
+    <div class="success-title">Confirmado! 🌿</div>
+    <div id="success-msg"></div>
+    <div style="font-family:var(--font-display);font-size:0.5rem;letter-spacing:0.2em;color:var(--olive-light);margin-bottom:16px">
+      Prazo para editar: <span id="edit-deadline"></span> · <span id="edit-time-left"></span>
+    </div>
+    <button class="btn btn-outline" id="edit-btn" onclick="RSVP.enterEdit()" style="color:var(--gold);border-color:var(--gold)">
+      Editar resposta
+    </button>
+  </div>
+</section>
+
+<!-- ── POPUP PALETA ── -->
+<div class="popup-overlay" id="popup-overlay" onclick="closePopup(event)">
+  <div class="popup">
+    <button class="popup-close" onclick="closePopup(event)">✕</button>
+    <div class="popup-header">
+      <div class="popup-title">Paleta & Traje</div>
+      <div class="popup-sub">Orientações de vestimenta</div>
+    </div>
+    <div class="popup-body">
+      <div class="palette-section">
+        <div class="palette-label">Cores da celebração</div>
+        <div class="palette-row" id="palette-swatches">
+          <!-- preenchido dinamicamente pelo SITE_CONFIG -->
+        </div>
+      </div>
+      <div class="popup-note" id="popup-note">
+        Vista-se com elegância e conforto para celebrar este momento especial.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="footer-brand">Feito com amor 🌿</div>
+  <a href="https://nupcial.app" class="footer-link" target="_blank">nupcial.app</a>
+</footer>
+
+<!-- ── SCRIPTS ── -->
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/site-resolver.js"></script>
+<script src="js/groups.js"></script>
+<script src="js/countdown.js"></script>
+<script src="js/ambient.js"></script>
+<script src="js/palette-popup.js"></script>
+<script src="js/rsvp.js"></script>
+
+<script>
+/* Preenche os dados dinâmicos do casal quando o site carregar */
+window.addEventListener('site-ready', function () {
+  const c = window.SITE_CONFIG || {};
+
+  /* Nomes */
+  const noiva = c.nome_noiva || 'Noiva';
+  const noivo = c.nome_noivo || 'Noivo';
+  document.getElementById('hero-noiva').textContent = noiva;
+  document.getElementById('hero-noivo').textContent = noivo;
+  document.title = `${noiva} & ${noivo} — Nupcial`;
+
+  /* Data */
+  if (c.data_casamento) {
+    const d = new Date(c.data_casamento);
+    const meses = ['janeiro','fevereiro','março','abril','maio','junho',
+                   'julho','agosto','setembro','outubro','novembro','dezembro'];
+    const h = String(d.getHours()).padStart(2,'0');
+    const m = String(d.getMinutes()).padStart(2,'0');
+    document.getElementById('hero-date').textContent =
+      `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()} · ${h}h${m}`;
+    document.getElementById('info-data').textContent =
+      `${String(d.getDate()).padStart(2,'0')} · ${String(d.getMonth()+1).padStart(2,'0')} · ${d.getFullYear()}`;
+  }
+
+  /* Local */
+  if (c.local_nome)   document.getElementById('info-local').innerHTML  = `<em>${c.local_nome}</em>`;
+  if (c.local_cidade) document.getElementById('info-cidade').textContent = c.local_cidade;
+
+  /* Paleta de cores */
+  if (c.cores) {
+    const swatches = document.getElementById('palette-swatches');
+    const labels = { gold: 'Dourado', gold_dark: 'Dourado escuro', olive: 'Oliva', cream: 'Creme' };
+    swatches.innerHTML = Object.entries(c.cores).map(([key, hex]) => `
+      <div class="swatch">
+        <div class="swatch-color" style="background:${hex}"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">${labels[key] || key}</span>
+          <span class="swatch-desc">${hex}</span>
+        </div>
+      </div>`).join('');
+  }
+});
+</script>
+
+</body>
+</html>
